@@ -1,0 +1,73 @@
+package org.chungnamthon.zeroroad.domain.member.entity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.chungnamthon.zeroroad.global.entity.BaseTimeEntity;
+
+@Table(name = "member")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@Entity
+public class Member extends BaseTimeEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
+    private String email;
+
+    @Column(name = "social_id", nullable = false)
+    private String socialId;
+
+    @Enumerated(value = EnumType.STRING)
+    private Role role;
+
+    @Column(name = "social_type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private SocialType socialType;
+
+    @Column(nullable = false)
+    private Long point;
+
+    @Column(name = "profile_img_url")
+    private String profileImgUrl;
+
+    @Column(name = "refresh_token")
+    private String refreshToken;
+
+    @Builder
+    private Member(
+            String name,
+            String email,
+            String socialId,
+            String profileImgUrl,
+            Role role,
+            SocialType socialType,
+            Long point,
+            String refreshToken
+    ) {
+        this.name = name;
+        this.email = email;
+        this.socialId = socialId;
+        this.role = role;
+        this.socialType = socialType;
+        this.point = point;
+        this.profileImgUrl = profileImgUrl;
+        this.refreshToken = refreshToken;
+    }
+
+}
