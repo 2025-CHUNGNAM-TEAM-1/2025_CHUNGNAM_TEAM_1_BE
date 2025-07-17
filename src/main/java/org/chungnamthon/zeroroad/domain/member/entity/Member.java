@@ -1,5 +1,7 @@
 package org.chungnamthon.zeroroad.domain.member.entity;
 
+import static java.util.Objects.requireNonNull;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -49,7 +51,7 @@ public class Member extends BaseTimeEntity {
     @Column(name = "refresh_token")
     private String refreshToken;
 
-    @Builder
+    @Builder(access = AccessLevel.PRIVATE)
     private Member(
             String name,
             String email,
@@ -67,6 +69,39 @@ public class Member extends BaseTimeEntity {
         this.socialType = socialType;
         this.point = point;
         this.profileImgUrl = profileImgUrl;
+        this.refreshToken = refreshToken;
+    }
+
+    public static Member createMember(String name, String email, String socialId, SocialType socialType, String profileImgUrl) {
+        requireNonNull(name);
+        requireNonNull(email);
+        requireNonNull(socialId);
+        requireNonNull(socialType);
+
+        return Member.builder()
+                .name(name)
+                .email(email)
+                .socialId(socialId)
+                .socialType(socialType)
+                .profileImgUrl(profileImgUrl)
+                .role(Role.GUEST)
+                .point(0L)
+                .build();
+    }
+
+    public void updateEmail(String email) {
+        this.email = email;
+    }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
+
+    public void updateProfileImgUrl(String profileImgUrl) {
+        this.profileImgUrl = profileImgUrl;
+    }
+
+    public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
 
