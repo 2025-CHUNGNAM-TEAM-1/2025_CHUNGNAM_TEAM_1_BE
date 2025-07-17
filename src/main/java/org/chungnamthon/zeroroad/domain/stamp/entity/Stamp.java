@@ -47,7 +47,6 @@ public class Stamp extends BaseTimeEntity {
         return Stamp.builder()
                 .member(member)
                 .map(map)
-                .collected(false)
                 .collectedAt(null)
                 .build();
     }
