@@ -58,22 +58,15 @@ public class JwtProvider {
             validateToken(token);
             return true;
         } catch (SecurityException | MalformedJwtException e) {
-            logTokenError("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다. Token:", token);
+            logTokenError("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다. Token", token);
         } catch (ExpiredJwtException e) {
-            logTokenError("Expired JWT, 만료된 JWT 입니다. Token: {}", token);
+            logTokenError("Expired JWT, 만료된 JWT 입니다. Token", token);
         } catch (UnsupportedJwtException e) {
-            logTokenError("Unsupported JWT, 지원되지 않는 JWT 입니다. Token: {}", token);
+            logTokenError("Unsupported JWT, 지원되지 않는 JWT 입니다. Token", token);
         } catch (IllegalArgumentException e) {
-            logTokenError("JWT claims is empty, 잘못된 JWT 입니다. Token: {}", token);
+            logTokenError("JWT claims is empty, 잘못된 JWT 입니다. Token", token);
         }
         return false;
-    }
-
-    public boolean isAccessToken(String token) {
-        Claims claims = getClaimsFromToken(token);
-        String category = String.valueOf(claims.get(CATEGORY_KEY));
-
-        return category.equals(ACCESS.getValue());
     }
 
     private SecretKey createSecretKey(String key) {

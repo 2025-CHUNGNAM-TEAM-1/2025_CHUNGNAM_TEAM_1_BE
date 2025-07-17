@@ -93,12 +93,12 @@ public class Member extends BaseTimeEntity {
         this.email = email;
     }
 
-    public void updateName(String name) {
+    public void updateBasicProfile(String name, String profileImgUrl) {
         this.name = name;
-    }
-
-    public void updateProfileImgUrl(String profileImgUrl) {
         this.profileImgUrl = profileImgUrl;
+    }
+    public void updateRoleToMember() {
+        this.role = Role.MEMBER;
     }
 
     public void updateRefreshToken(String refreshToken) {
