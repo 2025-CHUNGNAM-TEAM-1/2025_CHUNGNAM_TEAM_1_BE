@@ -2,9 +2,11 @@ package org.chungnamthon.zeroroad.domain.ecomove.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
+import org.chungnamthon.zeroroad.domain.ecomove.controller.dto.DistanceResponse;
 import org.chungnamthon.zeroroad.domain.ecomove.controller.dto.SegmentResponse;
 import org.chungnamthon.zeroroad.domain.ecomove.controller.dto.TransitRouteResponse;
 import org.chungnamthon.zeroroad.domain.ecomove.external.GoogleDirectionsClient;
+import org.chungnamthon.zeroroad.domain.ecomove.external.TmapClient;
 import org.chungnamthon.zeroroad.global.exception.EcoMoveException;
 import org.chungnamthon.zeroroad.global.exception.dto.ErrorStatus;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import java.util.List;
 public class EcoMoveService {
 
     private final GoogleDirectionsClient googleDirectionsClient;
+    private final TmapClient tmapClient;
 
     public TransitRouteResponse getTransitRoute(double startX, double startY, double endX, double endY) {
 
@@ -66,6 +69,21 @@ public class EcoMoveService {
         result.setTransitWalkingDuration(transitWalkingDuration);
         result.setSegmentResponses(segmentResponses);
         return result;
+    }
+
+    public DistanceResponse getEstimate(double startX,double startY,double endX,double endY){
+
+        if (!isValidCoordinate(startX, startY) || !isValidCoordinate(endX, endY)) {
+            throw new EcoMoveException(ErrorStatus.INVALID_COORDINATE);
+        }
+
+        int walkingTime = tmapClient.requestWalkingRoute(startX, startY, endX, endY);
+
+        DistanceResponse distanceResponse = new DistanceResponse();
+        distanceResponse.setWalkingTime(walkingTime);
+        distanceResponse.setBikingTime((int) (walkingTime*0.5)); // 자전거는 도보의 50% 빠른 시간으로 가정
+
+        return distanceResponse;
     }
 
     private boolean isValidCoordinate(double x, double y) {
