@@ -5,7 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.chungnamthon.zeroroad.domain.map.entity.Map;
+import org.chungnamthon.zeroroad.domain.map.entity.CulturePlace;
 import org.chungnamthon.zeroroad.domain.member.entity.Member;
 import org.chungnamthon.zeroroad.global.entity.BaseTimeEntity;
 import java.time.LocalDateTime;
@@ -32,21 +32,21 @@ public class Stamp extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "place_id",nullable = false)
-    private Map map;
+    private CulturePlace culturePlace;
 
     @Builder(access = AccessLevel.PRIVATE)
-    private Stamp(Long id, boolean collected, LocalDateTime collectedAt, Member member, Map map) {
+    private Stamp(Long id, boolean collected, LocalDateTime collectedAt, Member member, CulturePlace culturePlace) {
         this.id = id;
         this.collected = collected;
         this.collectedAt = collectedAt;
         this.member = member;
-        this.map = map;
+        this.culturePlace = culturePlace;
     }
 
-    public static Stamp createStamp(Member member, Map map) {
+    public static Stamp createStamp(Member member, CulturePlace culturePlace) {
         return Stamp.builder()
                 .member(member)
-                .map(map)
+                .culturePlace(culturePlace)
                 .collectedAt(null)
                 .build();
     }
