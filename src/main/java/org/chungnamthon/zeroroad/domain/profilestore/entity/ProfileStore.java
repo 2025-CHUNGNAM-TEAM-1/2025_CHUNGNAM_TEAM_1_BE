@@ -5,17 +5,19 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.chungnamthon.zeroroad.global.entity.BaseTimeEntity;
 
-@Entity
-@Getter
 @Table(name = "profile_store")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ProfileStore {
+@Getter
+@Entity
+public class ProfileStore extends BaseTimeEntity {
 
     @Id
-    @Column(name = "profile_id")
+    @Column(name = "profile_id", nullable = false)
     private String profileId;
 
     @Column(name = "item_name", nullable = false)
@@ -26,4 +28,12 @@ public class ProfileStore {
 
     @Column(nullable = false)
     private String image;
+
+    @Builder
+    public ProfileStore(String profileId, String itemName, int price, String image) {
+        this.profileId = profileId;
+        this.itemName = itemName;
+        this.price = price;
+        this.image = image;
+    }
 }
