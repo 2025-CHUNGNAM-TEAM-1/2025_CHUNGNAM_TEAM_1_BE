@@ -1,6 +1,7 @@
 package org.chungnamthon.zeroroad.domain.ecomove.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.chungnamthon.zeroroad.domain.ecomove.controller.dto.DistanceResponse;
 import org.chungnamthon.zeroroad.domain.ecomove.controller.dto.TransitRouteResponse;
 import org.chungnamthon.zeroroad.domain.ecomove.service.EcoMoveService;
 import org.springframework.http.ResponseEntity;
@@ -20,5 +21,11 @@ public class EcoMoveController extends EcoMoveDocsController{
     @GetMapping("/estimation/transit")
     public ResponseEntity<TransitRouteResponse> getTransitRouteInfo(@RequestParam double startX, @RequestParam double startY, @RequestParam double endX, @RequestParam double endY) {
         return ResponseEntity.ok(ecoMoveService.getTransitRoute(startX, startY, endX, endY));
+    }
+
+    @Override
+    @GetMapping("estimation/distance")
+    public ResponseEntity<DistanceResponse> getDistanceInfo(@RequestParam double startX, @RequestParam double startY, @RequestParam double endX, @RequestParam double endY) {
+        return ResponseEntity.ok(ecoMoveService.getEstimate(startX, startY, endX, endY));
     }
 }
