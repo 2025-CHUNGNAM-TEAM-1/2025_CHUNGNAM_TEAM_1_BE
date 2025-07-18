@@ -32,7 +32,13 @@ public enum ErrorStatus {
     UNAUTHORIZED_ERROR(401, "ERROR - 인증되지 않은 사용자입니다."),
     FORBIDDEN_ERROR(403, "ERROR - 접근 권한이 없습니다."),
     BAD_REQUEST_ARGUMENT(400, "ERROR - 유효하지 않은 인자입니다."),
-    EMPTY_SECURITY_CONTEXT(401,"Security Context 에 인증 정보가 없습니다.")
+    EMPTY_SECURITY_CONTEXT(401,"Security Context 에 인증 정보가 없습니다."),
+
+    // <=============== EcoMove ===============>
+    INVALID_COORDINATE(400, "ERROR - 잘못된 좌표 값입니다."),
+    UNSUPPORTED_TRAVEL_MODE(400, "ERROR - 지원하지 않는 이동 수단입니다."),
+    GOOGLE_API_ERROR(502, "ERROR - 외부 API 요청 중 문제가 발생했습니다."),
+    NO_TRANSIT_ROUTE(404, "ERROR - 경로를 찾을 수 없습니다.")
     ;
 
     private final int statusCode;
