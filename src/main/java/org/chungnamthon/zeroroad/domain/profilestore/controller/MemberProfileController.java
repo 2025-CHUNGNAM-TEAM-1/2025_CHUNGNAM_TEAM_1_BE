@@ -3,9 +3,9 @@ package org.chungnamthon.zeroroad.domain.profilestore.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.chungnamthon.zeroroad.domain.profilestore.dto.ImageRequest;
-import org.chungnamthon.zeroroad.domain.profilestore.service.MemberProfileService;
 import org.chungnamthon.zeroroad.domain.profilestore.dto.MemberProfileUpdate;
 import org.chungnamthon.zeroroad.domain.profilestore.dto.UserProfile;
+import org.chungnamthon.zeroroad.domain.profilestore.service.MemberProfileService;
 import org.chungnamthon.zeroroad.global.annotation.AuthMember;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,4 +41,13 @@ public class MemberProfileController extends MemberProfileDocsController {
         return ResponseEntity.ok(response);
     }
 
+    @Override
+    @PostMapping("/image")
+    public ResponseEntity<UserProfile> purchaseProfileImage(
+            @AuthMember Long memberId,
+            @Valid @RequestBody ImageRequest request
+    ) {
+        UserProfile response = memberProfileService.purchaseProfileImage(memberId, request.getImageId());
+        return ResponseEntity.ok(response);
+    }
 }

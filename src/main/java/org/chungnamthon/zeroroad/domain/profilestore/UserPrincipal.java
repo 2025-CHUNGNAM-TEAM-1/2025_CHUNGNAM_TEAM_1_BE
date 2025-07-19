@@ -1,4 +1,4 @@
-package org.chungnamthon.zeroroad.domain.profilestore.dto;
+package org.chungnamthon.zeroroad.domain.profilestore;
 
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;

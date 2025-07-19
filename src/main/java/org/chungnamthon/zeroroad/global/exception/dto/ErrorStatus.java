@@ -27,6 +27,11 @@ public enum ErrorStatus {
     FAILED_TO_UPLOAD_FILE(500, "ERROR - 파일 업로드에 실패하였습니다."),
     INVALID_FILE_EXTENSION(400, "ERROR - 지원하지 않는 파일 확장자입니다."),
 
+    // <=============== 프로필 상점/이미지 관련 ===============>
+    INSUFFICIENT_POINTS(400, "ERROR - 포인트가 부족합니다."),
+    PROFILE_IMAGE_NOT_FOUND(404, "ERROR - 프로필 이미지를 찾을 수 없습니다."),
+
+
     // <=============== ETC ===============>
     INTERNAL_SERVER_ERROR(500,"ERROR - 서버 내부 에러"),
     UNAUTHORIZED_ERROR(401, "ERROR - 인증되지 않은 사용자입니다."),

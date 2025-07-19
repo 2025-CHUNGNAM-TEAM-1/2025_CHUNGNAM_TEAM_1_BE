@@ -2,15 +2,17 @@ package org.chungnamthon.zeroroad.domain.profilestore.service;
 
 import lombok.RequiredArgsConstructor;
 import org.chungnamthon.zeroroad.domain.member.entity.Member;
-import org.chungnamthon.zeroroad.domain.member.repository.MemberRepository;
-import org.chungnamthon.zeroroad.domain.profilestore.entity.MemberOwnedProfileItem;
+import org.chungnamthon.zeroroad.domain.member.repository.MemberRepository; // 이곳의 MemberRepository
 import org.chungnamthon.zeroroad.domain.profilestore.dto.MemberProfileUpdate;
-import org.chungnamthon.zeroroad.domain.profilestore.entity.ProfileStore;
-import org.chungnamthon.zeroroad.domain.profilestore.dto.UserProfile;
 import org.chungnamthon.zeroroad.domain.profilestore.dto.ProfileImageItemDto;
+import org.chungnamthon.zeroroad.domain.profilestore.dto.UserProfile;
+import org.chungnamthon.zeroroad.domain.profilestore.entity.MemberOwnedProfileItem;
 import org.chungnamthon.zeroroad.domain.profilestore.respository.MemberOwnedProfileItemRepository;
-
+import org.chungnamthon.zeroroad.domain.profilestore.entity.ProfileStore;
 import org.chungnamthon.zeroroad.domain.profilestore.respository.ProfileStoreRepository;
+
+import org.chungnamthon.zeroroad.global.exception.BadRequestException;
+import org.chungnamthon.zeroroad.global.exception.NotFoundException;
 import org.chungnamthon.zeroroad.global.exception.dto.ErrorStatus;
 
 import org.springframework.stereotype.Service;
@@ -60,4 +62,38 @@ public class MemberProfileService {
         return getUserProfile(memberId);
     }
 
+    @Transactional
+    public UserProfile purchaseProfileImage(Long memberId, String imageId) {
+        // memberRepository.findById()는 이미 Member 객체를 반환하므로 .orElseThrow를 제거합니다.
+        Member member = memberRepository.findById(memberId);
+
+        ProfileStore profileItem = profileStoreRepository.findById(imageId)
+                .orElseThrow(() -> new NotFoundException(ErrorStatus.PROFILE_IMAGE_NOT_FOUND));
+
+        boolean alreadyOwned = memberOwnedProfileItemRepository.findByMember(member).stream()
+                .anyMatch(item -> item.getProfileStore().getProfileId().equals(imageId));
+
+        if (alreadyOwned) {
+            if (!member.getProfileImgUrl().equals(imageId)) {
+                member.updateProfileImgUrl(imageId);
+            }
+            return getUserProfile(memberId);
+        }
+
+        if (member.getPoint() < profileItem.getPrice()) {
+            throw new BadRequestException(ErrorStatus.INSUFFICIENT_POINTS);
+        }
+
+        member.deductPoint(profileItem.getPrice());
+
+        MemberOwnedProfileItem ownedItem = MemberOwnedProfileItem.builder()
+                .member(member)
+                .profileStore(profileItem)
+                .build();
+        memberOwnedProfileItemRepository.save(ownedItem);
+
+        member.updateProfileImgUrl(imageId);
+
+        return getUserProfile(memberId);
+    }
 }

@@ -10,8 +10,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-import org.chungnamthon.zeroroad.domain.profilestore.dto.MemberProfileUpdate;
-import org.chungnamthon.zeroroad.domain.profilestore.dto.UserProfile;
+import org.chungnamthon.zeroroad.domain.profilestore.dto.ImageRequest;
+import org.chungnamthon.zeroroad.domain.profilestore.dto.MemberProfileUpdate; // dto 패키지로 변경
+import org.chungnamthon.zeroroad.domain.profilestore.dto.UserProfile; // dto 패키지로 변경
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
@@ -25,13 +26,12 @@ public abstract class MemberProfileDocsController {
                     """
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공적으로 프로필 정보를 조회했습니다.", // description 수정
+            @ApiResponse(responseCode = "200", description = "프로필 정보를 조회했습니다.",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = UserProfile.class),
                             examples = @ExampleObject(
                                     name = "profileViewSuccess",
-                                    summary = "profileViewSuccess", // name과 동일하게 설정하여 드롭다운에 name만 보이도록
                                     value = """
                                             {
                                                 "userName": "제로로드",
@@ -55,12 +55,11 @@ public abstract class MemberProfileDocsController {
                                             """
                             )
                     )),
-            @ApiResponse(responseCode = "401", description = "인증되지 않은 사용자", // description 추가
+            @ApiResponse(responseCode = "401", description = "인증되지 않은 사용자",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             examples = @ExampleObject(
                                     name = "UNAUTHORIZED_ERROR",
-                                    summary = "UNAUTHORIZED_ERROR", // name과 동일하게 설정
                                     value = """
                                             {
                                                 "statusCode": 401,
@@ -71,12 +70,11 @@ public abstract class MemberProfileDocsController {
                             )
                     )),
 
-            @ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음", // description 수정
+            @ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             examples = @ExampleObject(
                                     name = "MEMBER_NOT_FOUND",
-                                    summary = "MEMBER_NOT_FOUND", // name과 동일하게 설정
                                     value = """
                                             {
                                                 "statusCode": 404,
@@ -101,7 +99,6 @@ public abstract class MemberProfileDocsController {
                     schema = @Schema(implementation = MemberProfileUpdate.class),
                     examples = @ExampleObject(
                             name = "updateProfileNameRequest",
-                            summary = "updateProfileNameRequest", // name과 동일하게 설정
                             value = """
                                     {
                                         "name": "새로운닉네임"
@@ -117,7 +114,6 @@ public abstract class MemberProfileDocsController {
                             schema = @Schema(implementation = UserProfile.class),
                             examples = @ExampleObject(
                                     name = "updateProfileNameResponse",
-                                    summary = "updateProfileNameResponse", // name과 동일하게 설정
                                     value = """
                                             {
                                                 "userName": "새로운닉네임",
@@ -128,12 +124,11 @@ public abstract class MemberProfileDocsController {
                                             """
                             )
                     )),
-            @ApiResponse(responseCode = "400", description = "잘못된 요청", // description 수정
+            @ApiResponse(responseCode = "400", description = "잘못된 요청",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             examples = @ExampleObject(
                                     name = "BAD_REQUEST",
-                                    summary = "BAD_REQUEST", // name과 동일하게 설정
                                     value = """
                                             {
                                                 "statusCode": 400,
@@ -143,12 +138,12 @@ public abstract class MemberProfileDocsController {
                                             """
                             )
                     )),
-            @ApiResponse(responseCode = "401", description = "인증되지 않은 사용자", // description 수정
+            @ApiResponse(responseCode = "401", description = "인증되지 않은 사용자",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             examples = @ExampleObject(
                                     name = "UNAUTHORIZED_ERROR",
-                                    summary = "UNAUTHORIZED_ERROR", // name과 동일하게 설정
+                                    summary = "UNAUTHORIZED_ERROR",
                                     value = """
                                             {
                                                 "statusCode": 401,
@@ -162,4 +157,117 @@ public abstract class MemberProfileDocsController {
     public abstract ResponseEntity<UserProfile> updateProfileName(
             @Parameter(hidden = true) Long memberId,
             MemberProfileUpdate request);
+
+    @Operation(
+            summary = "프로필 이미지 구매 - JWT O",
+            description = """
+                    프로필 이미지를 구매하고 즉시 적용합니다. 포인트가 부족하면 실패합니다.
+                    """
+    )
+    @RequestBody(
+            description = "구매할 이미지 ID",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(type = "object", example = "{\"imageId\": \"user_2\"}"),
+                    examples = @ExampleObject(
+                            name = "purchaseImageRequest",
+                            value = """
+                                    {
+                                        "imageId": "image_new_item_id"
+                                    }
+                                    """
+                    )
+            )
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "구매 및 적용 완료 후 변경된 사용자 정보 반환",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = UserProfile.class),
+                            examples = @ExampleObject(
+                                    name = "purchaseImageSuccess",
+                                    value = """
+                                            {
+                                                "userName": "제로로드",
+                                                "currentPoints": 950,
+                                                "currentImageId": "image_new_item_id",
+                                                "profileImages": [
+                                                    {
+                                                        "imageId": "image_123",
+                                                        "imageUrl": "http://example.com/image1.png",
+                                                        "price": 0,
+                                                        "item": true
+                                                    },
+                                                    {
+                                                        "imageId": "image_new_item_id",
+                                                        "imageUrl": "http://example.com/new_item.png",
+                                                        "price": 50,
+                                                        "item": true
+                                                    }
+                                                ]
+                                            }
+                                            """
+                            )
+                    )),
+            @ApiResponse(responseCode = "400", description = "포인트 부족 또는 잘못된 요청",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = {
+                                    @ExampleObject(
+                                            name = "INSUFFICIENT_POINTS_ERROR", // 이름 변경
+                                            summary = "포인트 부족 오류",
+                                            value = """
+                                                    {
+                                                        "statusCode": 400,
+                                                        "message": "ERROR - 포인트가 부족합니다.",
+                                                        "validation": {}
+                                                    }
+                                                    """
+                                    ),
+                                    @ExampleObject(
+                                            name = "BAD_REQUEST",
+                                            summary = "잘못된 이미지 ID",
+                                            value = """
+                                                    {
+                                                        "statusCode": 400,
+                                                        "message": "ERROR - 유효하지 않은 이미지 ID입니다.",
+                                                        "validation": {}
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )),
+            @ApiResponse(responseCode = "404", description = "프로필 이미지를 찾을 수 없음", // 404 응답 추가
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "PROFILE_IMAGE_NOT_FOUND",
+                                    value = """
+                                            {
+                                                "statusCode": 404,
+                                                "message": "ERROR - 프로필 이미지를 찾을 수 없습니다.",
+                                                "validation": {}
+                                            }
+                                            """
+                            )
+                    )),
+            @ApiResponse(responseCode = "401", description = "인증되지 않은 사용자",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "UNAUTHORIZED_ERROR",
+                                    value = """
+                                            {
+                                                "statusCode": 401,
+                                                "message": "ERROR - 인증되지 않은 사용자입니다.",
+                                                "validation": {}
+                                            }
+                                            """
+                            )
+                    ))
+    })
+    public abstract ResponseEntity<UserProfile> purchaseProfileImage(
+            @Parameter(hidden = true) Long memberId,
+            ImageRequest request);
+
 }
