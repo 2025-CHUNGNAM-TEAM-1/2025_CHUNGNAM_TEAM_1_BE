@@ -15,6 +15,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.chungnamthon.zeroroad.global.entity.BaseTimeEntity;
+import org.chungnamthon.zeroroad.global.exception.BadRequestException;
+import org.chungnamthon.zeroroad.global.exception.dto.ErrorStatus;
 
 @Table(name = "member")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -105,4 +107,14 @@ public class Member extends BaseTimeEntity {
         this.refreshToken = refreshToken;
     }
 
+    public void deductPoint(long amount) {
+        if (this.point < amount) {
+            throw new BadRequestException(ErrorStatus.INSUFFICIENT_POINTS);
+        }
+        this.point -= amount;
+    }
+
+    public void updateProfileImgUrl(String newImageUrl) {
+        this.profileImgUrl = newImageUrl;
+    }
 }
