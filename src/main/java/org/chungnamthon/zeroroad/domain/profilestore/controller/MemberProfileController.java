@@ -23,7 +23,7 @@ public class MemberProfileController extends MemberProfileDocsController {
     private final MemberProfileService memberProfileService;
 
     @Override
-    @GetMapping("/edit")
+    @GetMapping
     public ResponseEntity<UserProfile> getProfileView(
             @AuthMember Long memberId
     ) {
@@ -32,7 +32,7 @@ public class MemberProfileController extends MemberProfileDocsController {
     }
 
     @Override
-    @PatchMapping
+    @PatchMapping("/edits")
     public ResponseEntity<UserProfile> updateProfileName(
             @AuthMember Long memberId,
             @Valid @RequestBody MemberProfileUpdate request
